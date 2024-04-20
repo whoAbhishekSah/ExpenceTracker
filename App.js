@@ -1,27 +1,22 @@
 import React, { useState, useForm } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native';
 
-global.totalSpent = 0
-
 const Form = () => {
   const [amount, setAmount] = useState(0);
-
-  const handleSubmit = () => {
-    global.totalSpent += amount;
-  }
+  const [sum, setSum] = useState(0);
 
   return (
     <View>
-      <Text>Total amount {amount}</Text>
+      <Text>Total Amount {sum}</Text>
       <TextInput
         style={{ height: 40 }}
-        placeholder="Amount spent"
+        placeholder="Amountspent"
         keyboardType='number-pad'
         onChangeText={(text) => { setAmount(text); }}
       />
       <Button
         title="Press me"
-        onPress={handleSubmit}
+        onPress={() => {setSum(sum + Number(amount))}}
       />
     </View>
   )
