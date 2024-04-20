@@ -12,11 +12,12 @@ const Form = () => {
         style={{ height: 40 }}
         placeholder="Amountspent"
         keyboardType='number-pad'
+        value={amount}
         onChangeText={(text) => { setAmount(text); }}
       />
       <Button
         title="Press me"
-        onPress={() => {setSum(sum + Number(amount))}}
+        onPress={() => {setSum(sum + Number(amount));setAmount("")}}
       />
     </View>
   )
