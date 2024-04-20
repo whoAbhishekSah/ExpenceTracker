@@ -1,19 +1,30 @@
-import React, { useState, useForm } from 'react';
+import React, { useState, useForm, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Form = () => {
   const [amount, setAmount] = useState("");
   const [sum, setSum] = useState(0);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     Keyboard.dismiss()
     setSum(sum + Number(amount))
     setAmount("")
+    await AsyncStorage.setItem('expences', String(Number(sum) + Number(amount)));
+  }
+
+  useEffect(() => {
+    fetchValue()
+  })
+
+  const fetchValue = async () => {
+    const value = await AsyncStorage.getItem('expences');
+    setSum(value || 0)
   }
 
   return (
     <View>
-      <Text>Total Amount {sum}</Text>
+      <Text>Total Spent &#8377;{sum}</Text>
       <TextInput
         style={{ height: 40 }}
         placeholder="Enter Amount spent"
@@ -33,7 +44,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Expence Tracking</Text>
-      <Text>Sum {global.totalSpent}</Text>
       <Form></Form>
     </View>
   );
