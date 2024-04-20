@@ -1,11 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useForm } from 'react';
+import { StyleSheet, Text, TextInput, View, Button, Keyboard } from 'react-native';
+
+const Form = () => {
+  const [amount, setAmount] = useState("");
+  const [sum, setSum] = useState(0);
+
+  const handleSubmit = () => {
+    Keyboard.dismiss()
+    setSum(sum + Number(amount))
+    setAmount("")
+  }
+
+  return (
+    <View>
+      <Text>Total Amount {sum}</Text>
+      <TextInput
+        style={{ height: 40 }}
+        placeholder="Enter Amount spent"
+        keyboardType='number-pad'
+        value={amount}
+        onChangeText={(text) => { setAmount(text); }}
+      />
+      <Button
+        title="Add"
+        onPress={handleSubmit}
+      />
+    </View>
+  )
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>The quick Brown fox jumped over the lazy dog!</Text>
-      <StatusBar style="auto" />
+      <Text>Expence Tracking</Text>
+      <Text>Sum {global.totalSpent}</Text>
+      <Form></Form>
     </View>
   );
 }
