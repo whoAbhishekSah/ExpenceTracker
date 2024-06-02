@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, View, Button, Keyboard } from 'react-native';
+import { StyleSheet, TextInput, Button, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addExpences } from './utils';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import { ApplicationProvider, Layout, Text, IndexPath, Select, SelectItem } from '@ui-kitten/components';
 
 const Form = () => {
   const [amount, setAmount] = useState("");
   const [sum, setSum] = useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+  const data = ['groceries', 'online-food', 'travel', 'trips', 'electronics', 'family', 'others']
 
   const handleSubmit = async () => {
     Keyboard.dismiss()
@@ -16,7 +18,7 @@ const Form = () => {
     await AsyncStorage.setItem('expences', String(Number(sum) + Number(amount)));
     const jsonValue = await AsyncStorage.getItem('expencesTable');
     const expencesTable = JSON.parse(jsonValue) || []
-    addExpences("food", amount, expencesTable)
+    addExpences(data[selectedIndex.row], amount, expencesTable)
     await AsyncStorage.setItem('expencesTable', JSON.stringify(expencesTable));
     const updatedTable = await AsyncStorage.getItem('expencesTable');
     console.log("updated expences table", JSON.parse(updatedTable))
@@ -26,13 +28,22 @@ const Form = () => {
     fetchValue()
   })
 
+  const displayValue = data[selectedIndex.row];
+
+  const renderOption = (title) => (
+    <SelectItem title={title} />
+  );
+
   const fetchValue = async () => {
     const value = await AsyncStorage.getItem('expences');
     setSum(value || 0)
   }
 
   return (
-    <View>
+    <Layout
+      style={styles.container}
+      level='1'
+    >
       <Text>Total Spent &#8377;{sum}</Text>
       <TextInput
         style={{ height: 40 }}
@@ -41,16 +52,23 @@ const Form = () => {
         value={amount}
         onChangeText={(text) => { setAmount(text); }}
       />
+      <Select
+        selectedIndex={selectedIndex}
+        value={displayValue}
+        onSelect={index => setSelectedIndex(index)}
+      >
+        {data.map(renderOption)}
+      </Select>
       <Button
         title="Add"
         onPress={handleSubmit}
       />
-    </View>
+    </Layout>
   )
 }
 
 const HomeScreen = () => (
-  <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  <Layout style={{ flex: 1, justifyContent: 'center' }}>
     <Text>Expence Tracking</Text>
     <Form></Form>
   </Layout>
@@ -63,3 +81,9 @@ export default function App() {
     </ApplicationProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    minHeight: 128,
+  },
+});
