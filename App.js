@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addExpences } from './utils';
 
 const Form = () => {
   const [amount, setAmount] = useState("");
@@ -16,7 +17,7 @@ const Form = () => {
     addExpences("food", amount, expencesTable)
     await AsyncStorage.setItem('expencesTable', JSON.stringify(expencesTable));
     const updatedTable = await AsyncStorage.getItem('expencesTable');
-    console.log("updated expeces table", JSON.parse(updatedTable))
+    console.log("updated expences table", JSON.parse(updatedTable))
   }
 
   useEffect(() => {
@@ -63,13 +64,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-const addExpences = (category, amount, expencesTable) => {
-  for(let i = 0; i < expencesTable.length; i++) {
-    if (expencesTable[i]["type"] == category) {
-      expencesTable[i]["amount"] += Number(amount)
-      return
-    };
-  }
-  expencesTable.push({"type":category, "amount": Number(amount)})
-}
