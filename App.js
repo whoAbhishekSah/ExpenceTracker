@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Keyboard } from 'react-native';
+import { TextInput, View, Button, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addExpences } from './utils';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 const Form = () => {
   const [amount, setAmount] = useState("");
@@ -47,20 +49,17 @@ const Form = () => {
   )
 }
 
+const HomeScreen = () => (
+  <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <Text>Expence Tracking</Text>
+    <Form></Form>
+  </Layout>
+);
+
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Expence Tracking</Text>
-      <Form></Form>
-    </View>
+    <ApplicationProvider {...eva} theme={eva.light}>
+      <HomeScreen />
+    </ApplicationProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
