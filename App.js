@@ -1,4 +1,4 @@
-import React, { useState, useForm, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -11,6 +11,12 @@ const Form = () => {
     setSum(sum + Number(amount))
     setAmount("")
     await AsyncStorage.setItem('expences', String(Number(sum) + Number(amount)));
+    const jsonValue = await AsyncStorage.getItem('expencesTable');
+    const expencesTable = JSON.parse(jsonValue) || []
+    addExpences("food", amount, expencesTable)
+    await AsyncStorage.setItem('expencesTable', JSON.stringify(expencesTable));
+    const updatedTable = await AsyncStorage.getItem('expencesTable');
+    console.log("updated expeces table", JSON.parse(updatedTable))
   }
 
   useEffect(() => {
@@ -57,3 +63,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const addExpences = (category, amount, expencesTable) => {
+  for(let i = 0; i < expencesTable.length; i++) {
+    if (expencesTable[i]["type"] == category) {
+      expencesTable[i]["amount"] += Number(amount)
+      return
+    };
+  }
+  expencesTable.push({"type":category, "amount": Number(amount)})
+}
